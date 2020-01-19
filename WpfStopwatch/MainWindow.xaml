@@ -1,0 +1,160 @@
+﻿<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:entities="clr-namespace:WpfStopwatch.Entities"
+    xmlns:repository="clr-namespace:WpfStopwatch.Repository"
+    mc:Ignorable="d" x:Class="WpfStopwatch.MainWindow"
+    Title="StopWatch" Icon="/Resource/stopwatch.ico"
+    Height="500" Width="800" WindowStartupLocation="CenterScreen"
+    Background="Transparent" WindowStyle="None" OpacityMask="White" AllowsTransparency="True"
+    StateChanged="Window_StateChanged">
+
+    <Window.Resources>
+        <entities:Lap x:Key="lapObject" />
+        <repository:LapRepository x:Key="repository" />
+
+        <LinearGradientBrush x:Key="HeaderBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Color="#FF6B8E95" Offset="0" />
+            <GradientStop Color="#FF14A7C1" Offset="1" />
+            <GradientStop Color="#FF1E424E" Offset="0.509" />
+            <GradientStop Color="#FF1D4855" Offset="0.542" />
+            <GradientStop Color="#FF1D4855" Offset="0.542" />
+            <GradientStop Color="#FF193A44" Offset="0.526" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="HeaderBorderBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Color="#FF1D1D1D" Offset="0.614" />
+            <GradientStop Color="#FF007F96" Offset="0.853" />
+            <GradientStop Color="#FF0AEAFA" Offset="1" />
+        </LinearGradientBrush>
+
+        <Style x:Key="HeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="{StaticResource HeaderBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource HeaderBorderBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="30" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+    </Window.Resources>
+
+    <Window.DataContext>
+        <StaticResource ResourceKey="lapObject" />
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="69*" />
+            <ColumnDefinition Width="91*" />
+        </Grid.ColumnDefinitions>
+
+
+        <Grid Grid.Column="0">
+            <Image Source="Resource/tablet.png" x:Name="Tablet" Height="435"
+                   HorizontalAlignment="Left" VerticalAlignment="Center"
+                   Margin="1" Width="342" />
+            <StackPanel>
+                <DataGrid x:Name="dgLaps" HorizontalAlignment="Left"
+                          Height="280" Margin="28,124,0,0"
+                          VerticalAlignment="Top" Width="254"
+                          IsReadOnly="True"
+                          ItemsSource="{Binding Source={StaticResource repository}, Path=Laps}"
+                          RowBackground="LightBlue"
+                          AlternatingRowBackground="LightGray" AutoGenerateColumns="False"
+                          FontSize="16" ColumnHeaderStyle="{StaticResource HeaderStyle}"
+                          HorizontalGridLinesBrush="#FF2C505B"
+                          VerticalGridLinesBrush="#FF2C505B">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header=" Lap " Width="auto" FontSize="14"
+                                            Binding="{Binding LapNumber, StringFormat=N0 }" />
+                        <DataGridTextColumn Header=" Time " Width="*" FontSize="14"
+                                            Binding="{Binding TSpan,
+                                    StringFormat=hh\\:mm\\:ss\\:ff}" />
+                        <DataGridTextColumn Header=" Lap time " Width="*" FontSize="14"
+                                            Binding="{Binding TLap,
+                                    StringFormat=hh\\:mm\\:ss\\:ff}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <TextBlock x:Name="bestLap" Text="Best lap:"
+                           FontStyle="Italic" FontSize="16"
+                           TextDecorations="Underline"
+                           Height="23" Margin="29,0,133,0" />
+            </StackPanel>
+            <Grid.RenderTransform>
+                <RotateTransform Angle="-1.5" />
+            </Grid.RenderTransform>
+        </Grid>
+
+        <Canvas Grid.Column="1">
+            <Image Source="Resource/StopWatchSmall.png" Height="470" Width="430"
+                   Canvas.Left="10"
+                   Canvas.Top="5" />
+
+            <Image Source="Resource/pointer_arrow.png" x:Name="ArrowSeconds" Height="195"
+                   HorizontalAlignment="Stretch" VerticalAlignment="Center" Canvas.Left="212" Canvas.Top="137"
+                   RenderTransformOrigin="0.5,0.787">
+                <Image.RenderTransform>
+                    <RotateTransform x:Name="seconds" CenterX="0" CenterY="0" Angle="0" />
+                </Image.RenderTransform>
+            </Image>
+
+            <Image Source="Resource/pointer_arrow.png" x:Name="ArrowMinutes" Height="58"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Width="8"
+                   Canvas.Left="222"
+                   Canvas.Top="190" RenderTransformOrigin="0.438,0.792">
+                <Image.RenderTransform>
+                    <RotateTransform x:Name="minutes" CenterX="0" CenterY="0" Angle="0" />
+                </Image.RenderTransform>
+            </Image>
+
+            <StackPanel Height="35"
+                        Canvas.Left="162"
+                        Canvas.Top="341"
+                        VerticalAlignment="Center"
+                        Width="140">
+                <TextBlock Background="Transparent" x:Name="tbClock"
+                           Foreground="#FF293956" FontWeight="Bold" FontSize="25"
+                           Height="35" Width="105" Padding="2" Text="00:00:00" Margin="18,0,17,0" />
+            </StackPanel>
+
+            <Label Background="Transparent" Content="SF" HorizontalContentAlignment="Center"
+                   VerticalContentAlignment="Center"
+                   BorderBrush="Transparent" x:Name="btStartStop" Width="80"
+                   Foreground="#FFF32525" FontSize="24" FontWeight="Bold" Cursor="Hand"
+                   MouseDown="btStartStop_MouseDown" Canvas.Left="185" Canvas.Top="5" Height="90" />
+
+            <Label Background="Transparent" Content="--" HorizontalAlignment="Center"
+                   BorderBrush="Transparent" x:Name="btMin"
+                   FontSize="20" FontWeight="Bold" Cursor="Hand"
+                   MouseDown="btMin_MouseDown" Width="40" Height="35" Canvas.Left="285" Canvas.Top="305" />
+
+            <Label Background="Transparent" Content="R" HorizontalContentAlignment="Center"
+                   BorderBrush="Transparent" x:Name="btReset"
+                   Foreground="#FFF32525" FontWeight="Bold" FontSize="25" Cursor="Hand"
+                   MouseDown="btReset_MouseDown" Width="50" Canvas.Left="70" Canvas.Top="108" Height="47">
+                <Label.RenderTransform>
+                    <RotateTransform Angle="-37.81" />
+                </Label.RenderTransform>
+            </Label>
+
+            <Label Background="Transparent" Content="L" HorizontalContentAlignment="Center"
+                   BorderBrush="Transparent" x:Name="btLaps"
+                   Foreground="#FFF32525" FontWeight="Bold" FontSize="25" Cursor="Hand"
+                   MouseDown="btLaps_MouseDown" Width="50" Canvas.Left="341" Canvas.Top="79" Height="57">
+                <Label.RenderTransform>
+                    <RotateTransform Angle="37.81" />
+                </Label.RenderTransform>
+            </Label>
+            <Label Background="Transparent" Content="X" HorizontalAlignment="Center"
+                   BorderBrush="Transparent" x:Name="btClose"
+                   FontSize="20" FontWeight="Bold" Cursor="Hand"
+                   MouseDown="btClose_MouseDown" Width="25" Height="35" Canvas.Left="153" Canvas.Top="308" />
+        </Canvas>
+    </Grid>
+</Window>
