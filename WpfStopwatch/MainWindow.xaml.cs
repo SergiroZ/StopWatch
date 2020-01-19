@@ -9,9 +9,6 @@ using WpfStopwatch.Repository;
 
 namespace WpfStopwatch
 {
-    /// <summary>
-    ///
-    /// </summary>
     public partial class MainWindow : Window
     {
         public LapRepository LapsRepository { get; }
